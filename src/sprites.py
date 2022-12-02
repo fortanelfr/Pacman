@@ -29,7 +29,8 @@ class PacmanSprites(Spritesheet):
         self.entity.image = self.getStartImage()
         self.animations = {}
         self.defineAnimations()
-        self.stopimage = (8, 0)       
+        self.stopimage = (8, 0)
+        self.sin = True      
 
     def getStartImage(self):
         return self.getImage(8, 0)
@@ -47,6 +48,8 @@ class PacmanSprites(Spritesheet):
 
 
     def update(self, dt):
+        death_1 = pygame.mixer.Sound("sound/death_1.wav")
+        death_2 = pygame.mixer.Sound("sound/death_2.wav")
         if self.entity.alive == True:
             if self.entity.direction == LEFT:
                 self.entity.image = self.getImage(*self.animations[LEFT].update(dt))
@@ -63,7 +66,15 @@ class PacmanSprites(Spritesheet):
             elif self.entity.direction == STOP:
                 self.entity.image = self.getImage(*self.stopimage)
         else:
-           self.entity.image = self.getImage(*self.animations[DEATH].update(dt))
+           a = self.animations[DEATH].update(dt)
+           if a == (0,12) and self.sin:
+              pygame.mixer.Sound.play(death_1)
+              self.sin = False
+           elif a == (20,12) and not(self.sin):
+              pygame.mixer.stop()
+              pygame.mixer.Sound.play(death_2,1)
+              self.sin = True
+           self.entity.image = self.getImage(*a)
 
     def reset(self):
         for key in list(self.animations.keys()):

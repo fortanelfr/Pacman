@@ -121,7 +121,7 @@ class GameController(object):
                      if self.pacman.alive:
                          self.lives -=  1
                          self.lifesprites.removeImage()
-                         self.pacman.die()
+                         self.pacman.die()                        
                          self.ghosts.hide()
                          if self.lives <= 0:
                              self.textgroup.showText(GAMEOVERTXT)
