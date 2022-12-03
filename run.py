@@ -69,6 +69,7 @@ class GameController(object):
         self.nodes.denyAccessList(15, 14, UP, self.ghosts)
         self.nodes.denyAccessList(12, 26, UP, self.ghosts)
         self.nodes.denyAccessList(15, 26, UP, self.ghosts)
+        self.game_start = pygame.mixer.Sound("sound/game_start.wav")
         self.siren_1 = pygame.mixer.Sound("sound/siren_1.wav")
         self.siren_2 = pygame.mixer.Sound("sound/siren_2.wav")
         self.siren_3 = pygame.mixer.Sound("sound/siren_3.wav")
@@ -79,8 +80,12 @@ class GameController(object):
         self.spawn = pygame.mixer.Sound("sound/retreating.wav")
         self.loop_channel = pygame.mixer.Channel(0)
         self.eat_ghost_channel = pygame.mixer.Channel(2)
+        self.start_channel = pygame.mixer.Channel(3)
         self.current__sound = None
-        self.new_sound = self.siren_1
+        self.new_sound = self.game_start
+        if self.new_sound == self.game_start:
+                   self.start_channel.play(self.new_sound)
+                   self.new_sound = self.siren_1
 
 
 
@@ -103,6 +108,7 @@ class GameController(object):
                 self.new_sound = self.siren_2    
             else:
                 self.new_sound = self.siren_1
+
             if not self.current__sound == self.new_sound:
                 self.loop_channel.play(self.new_sound,-1)
                 self.current__sound = self.new_sound
@@ -182,14 +188,16 @@ class GameController(object):
             if event.type == QUIT:
                 exit()
             elif event.type == KEYDOWN:
-                if event.key == K_SPACE  and self.pacman.alive:
-                    self.pause.setPause(playerPaused=True)
-                    if not self.pause.paused:
-                        self.textgroup.hideText()
-                        self.showEntities()
-                    else:
-                        self.textgroup.showText(PAUSETXT)
-                        self.hideEntities()
+                #it's only possible to start the game if the start sound has finished
+                if not self.start_channel.get_busy():
+                    if event.key == K_SPACE  and self.pacman.alive:
+                        self.pause.setPause(playerPaused=True)
+                        if not self.pause.paused:
+                            self.textgroup.hideText()
+                            self.showEntities()
+                        else:
+                            self.textgroup.showText(PAUSETXT)
+                            self.hideEntities()
 
     def render(self):
         self.screen.blit(self.background, (0, 0))
