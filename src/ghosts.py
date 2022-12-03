@@ -169,3 +169,9 @@ class GhostGroup(object):
     def render(self, screen):
         for ghost in self:
             ghost.render(screen)
+
+    def Freight_state(self):
+        for ghost in self.ghosts:
+            if ghost.mode.current == FREIGHT:
+                return True
+        return False

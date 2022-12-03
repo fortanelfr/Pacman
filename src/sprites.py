@@ -30,7 +30,8 @@ class PacmanSprites(Spritesheet):
         self.animations = {}
         self.defineAnimations()
         self.stopimage = (8, 0)
-        self.sin = True      
+        self.sin = True
+        self.death_channel = pygame.mixer.Channel(1) 
 
     def getStartImage(self):
         return self.getImage(8, 0)
@@ -68,11 +69,11 @@ class PacmanSprites(Spritesheet):
         else:
            a = self.animations[DEATH].update(dt)
            if a == (0,12) and self.sin:
-              pygame.mixer.Sound.play(death_1)
+              self.death_channel.play(death_1)
               self.sin = False
            elif a == (20,12) and not(self.sin):
-              pygame.mixer.stop()
-              pygame.mixer.Sound.play(death_2,1)
+              self.death_channel.stop()
+              self.death_channel.play(death_2,1)
               self.sin = True
            self.entity.image = self.getImage(*a)
 

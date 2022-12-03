@@ -69,6 +69,11 @@ class GameController(object):
         self.nodes.denyAccessList(15, 14, UP, self.ghosts)
         self.nodes.denyAccessList(12, 26, UP, self.ghosts)
         self.nodes.denyAccessList(15, 26, UP, self.ghosts)
+        self.siren = pygame.mixer.Sound("sound/siren_1.wav")
+        self.power = pygame.mixer.Sound("sound/power_pellet.wav")
+        self.loop_channel = pygame.mixer.Channel(0)
+        self.current__sound = None
+        self.new__sound = self.siren 
 
 
 
@@ -77,12 +82,23 @@ class GameController(object):
         self.textgroup.update(dt)
         self.pellets.update(dt)
         if not self.pause.paused:
+            if not self.loop_channel.get_busy() and not self.ghosts.Freight_state():
+               self.loop_channel.play(self.siren,-1)
+               self.current__sound = self.siren
+            if self.ghosts.Freight_state() and self.current__sound == self.siren:
+                self.loop_channel.play(self.power,-1)
+                self.current__sound = self.power
+
             self.ghosts.update(dt)
             if self.fruit is not None:
                 self.fruit.update(dt)
             self.checkPelletEvents()
             self.checkGhostEvents()
             self.checkFruitEvents()
+        else:
+            if self.loop_channel.get_busy():
+               self.loop_channel.stop()
+               print('pausa')
 
         if self.pacman.alive:
             if not self.pause.paused:
@@ -177,8 +193,10 @@ class GameController(object):
 
     
     def checkPelletEvents(self):
+        munch = [pygame.mixer.Sound("sound/munch_2.wav"),pygame.mixer.Sound("sound/munch_1.wav")]
         pellet = self.pacman.eatPellets(self.pellets.pelletList)
-        if pellet:
+        if pellet:  
+            pygame.mixer.Sound.play(munch[self.pellets.numEaten % 2])
             self.pellets.numEaten += 1
             self.updateScore(pellet.points)
             if self.pellets.numEaten == 30:
