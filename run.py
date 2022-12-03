@@ -71,9 +71,11 @@ class GameController(object):
         self.nodes.denyAccessList(15, 26, UP, self.ghosts)
         self.siren = pygame.mixer.Sound("sound/siren_1.wav")
         self.power = pygame.mixer.Sound("sound/power_pellet.wav")
+        self.eat_ghost = pygame.mixer.Sound("sound/eat_ghost.wav")
         self.loop_channel = pygame.mixer.Channel(0)
+        self.eat_ghost_channel = pygame.mixer.Channel(2)
         self.current__sound = None
-        self.new__sound = self.siren 
+        self.new_sound = self.siren 
 
 
 
@@ -82,13 +84,13 @@ class GameController(object):
         self.textgroup.update(dt)
         self.pellets.update(dt)
         if not self.pause.paused:
-            if not self.loop_channel.get_busy() and not self.ghosts.Freight_state():
-               self.loop_channel.play(self.siren,-1)
-               self.current__sound = self.siren
-            if self.ghosts.Freight_state() and self.current__sound == self.siren:
-                self.loop_channel.play(self.power,-1)
-                self.current__sound = self.power
-
+            if self.ghosts.Freight_state():
+                self.new_sound = self.power
+            else:
+                self.new_sound = self.siren
+            if not self.current__sound == self.new_sound:
+                self.loop_channel.play(self.new_sound,-1)
+                self.current__sound = self.new_sound
             self.ghosts.update(dt)
             if self.fruit is not None:
                 self.fruit.update(dt)
@@ -98,6 +100,7 @@ class GameController(object):
         else:
             if self.loop_channel.get_busy():
                self.loop_channel.stop()
+               self.current__sound = None
                print('pausa')
 
         if self.pacman.alive:
@@ -125,6 +128,7 @@ class GameController(object):
         for ghost in self.ghosts:
             if self.pacman.collideGhost(ghost):
                 if ghost.mode.current is FREIGHT:
+                    pygame.mixer.Sound.play(self.eat_ghost)
                     self.pacman.visible = False
                     self.updateScore(ghost.points)
                     self.textgroup.addText(str(ghost.points), WHITE, ghost.position.x, ghost.position.y, 8, time=1)
