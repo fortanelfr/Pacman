@@ -175,3 +175,9 @@ class GhostGroup(object):
             if ghost.mode.current == FREIGHT:
                 return True
         return False
+
+    def Spawn_state(self):
+        for ghost in self.ghosts:
+            if ghost.mode.current == SPAWN:
+                return True
+        return False

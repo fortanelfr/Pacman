@@ -72,6 +72,7 @@ class GameController(object):
         self.siren = pygame.mixer.Sound("sound/siren_1.wav")
         self.power = pygame.mixer.Sound("sound/power_pellet.wav")
         self.eat_ghost = pygame.mixer.Sound("sound/eat_ghost.wav")
+        self.spawn = pygame.mixer.Sound("sound/retreating.wav")
         self.loop_channel = pygame.mixer.Channel(0)
         self.eat_ghost_channel = pygame.mixer.Channel(2)
         self.current__sound = None
@@ -84,7 +85,9 @@ class GameController(object):
         self.textgroup.update(dt)
         self.pellets.update(dt)
         if not self.pause.paused:
-            if self.ghosts.Freight_state():
+            if self.ghosts.Spawn_state():
+                self.new_sound = self.spawn
+            elif self.ghosts.Freight_state():
                 self.new_sound = self.power
             else:
                 self.new_sound = self.siren
