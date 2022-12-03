@@ -69,14 +69,18 @@ class GameController(object):
         self.nodes.denyAccessList(15, 14, UP, self.ghosts)
         self.nodes.denyAccessList(12, 26, UP, self.ghosts)
         self.nodes.denyAccessList(15, 26, UP, self.ghosts)
-        self.siren = pygame.mixer.Sound("sound/siren_1.wav")
+        self.siren_1 = pygame.mixer.Sound("sound/siren_1.wav")
+        self.siren_2 = pygame.mixer.Sound("sound/siren_2.wav")
+        self.siren_3 = pygame.mixer.Sound("sound/siren_3.wav")
+        self.siren_4 = pygame.mixer.Sound("sound/siren_4.wav")
+        self.siren_5 = pygame.mixer.Sound("sound/siren_5.wav")
         self.power = pygame.mixer.Sound("sound/power_pellet.wav")
         self.eat_ghost = pygame.mixer.Sound("sound/eat_ghost.wav")
         self.spawn = pygame.mixer.Sound("sound/retreating.wav")
         self.loop_channel = pygame.mixer.Channel(0)
         self.eat_ghost_channel = pygame.mixer.Channel(2)
         self.current__sound = None
-        self.new_sound = self.siren 
+        self.new_sound = self.siren_1
 
 
 
@@ -89,8 +93,16 @@ class GameController(object):
                 self.new_sound = self.spawn
             elif self.ghosts.Freight_state():
                 self.new_sound = self.power
+            elif self.pellets.numEaten >= 195:
+                self.new_sound = self.siren_5
+            elif self.pellets.numEaten >= 122:
+                self.new_sound = self.siren_4
+            elif self.pellets.numEaten >= 70:
+                self.new_sound = self.siren_3
+            elif self.pellets.numEaten >= 30:
+                self.new_sound = self.siren_2    
             else:
-                self.new_sound = self.siren
+                self.new_sound = self.siren_1
             if not self.current__sound == self.new_sound:
                 self.loop_channel.play(self.new_sound,-1)
                 self.current__sound = self.new_sound
