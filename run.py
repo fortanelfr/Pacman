@@ -77,6 +77,7 @@ class GameController(object):
         self.siren_5 = pygame.mixer.Sound("sound/siren_5.wav")
         self.power = pygame.mixer.Sound("sound/power_pellet.wav")
         self.eat_ghost = pygame.mixer.Sound("sound/eat_ghost.wav")
+        self.eat_fruit = pygame.mixer.Sound("sound/eat_fruit.wav")
         self.spawn = pygame.mixer.Sound("sound/retreating.wav")
         self.loop_channel = pygame.mixer.Channel(0)
         self.eat_ghost_channel = pygame.mixer.Channel(2)
@@ -176,6 +177,7 @@ class GameController(object):
                 self.fruit = Fruit(self.nodes.getNodeFromTiles(9, 20))
         if self.fruit is not None:
             if self.pacman.collideCheck(self.fruit):
+                pygame.mixer.Sound.play(self.eat_fruit)
                 self.updateScore(self.fruit.points)
                 self.textgroup.addText(str(self.fruit.points), WHITE, self.fruit.position.x, self.fruit.position.y, 8, time=1) 
                 self.fruit = None
