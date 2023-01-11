@@ -14,6 +14,7 @@ from src.sprites import MazeSprites
 class GameController(object):
     def __init__(self):
         pygame.init()
+        pygame.display.set_caption('Pacman')
         self.screen = pygame.display.set_mode(SCREENSIZE, 0, 32)
         self .background = None
         self.background_norm = None
