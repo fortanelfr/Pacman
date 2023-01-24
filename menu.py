@@ -1,6 +1,6 @@
 import pygame
-import sys 
 from src.constants import *
+from src.button import *
 import run 
   
   
@@ -9,6 +9,7 @@ pygame.init()
 
 # opens up a window 
 screen = pygame.display.set_mode(SCREENSIZE) 
+
   
 # black color 
 color = (BLACK) 
@@ -31,9 +32,12 @@ button_width = width/3
 button_heigth = height/12
 
 button_x = width/3
-button_y = height/12 * 4
+button_y = height/12 * 5
 
-print(button_x,button_y)
+start = button(button_x,button_y,button_heigth,button_width,color_dark,text = 'Start Game')
+score = button(button_x,button_y + height/12*1.5,button_heigth,button_width,color_dark,text = 'Score')
+exit = button(button_x,button_y + height/12*3,button_heigth,button_width,color_dark,text = 'Exit')
+
 
   
 # defining a font 
@@ -55,11 +59,15 @@ while True:
               
             #if the mouse is clicked on the 
             # button the game is terminated 
-            if button_x <= mouse[0] <= button_x+button_width and button_y <= mouse[1] <= button_y+button_heigth: 
+            if start.isOver(mouse):
                 game = run.GameController()
                 game.startGame()
                 while True:
                      game.update()
+
+            if exit.isOver(mouse):
+                pygame.quit() 
+                
                   
     # fills the screen with a color 
     screen.fill(BLACK) 
@@ -70,14 +78,26 @@ while True:
       
     # if mouse is hovered on a button it 
     # changes to lighter shade 
-    if button_x <= mouse[0] <= button_x+button_width and button_y <= mouse[1] <= button_y+button_heigth: 
-        pygame.draw.rect(screen,color_light,[button_x,button_y,button_width,button_heigth]) 
+    if start.isOver(mouse):
+        start.draw(screen,color_light)
           
     else: 
-        pygame.draw.rect(screen,color_dark,[button_x,button_y,button_width,button_heigth]) 
+        start.draw(screen)
+
+    if score.isOver(mouse):
+        score.draw(screen,color_light)
+          
+    else: 
+        score.draw(screen)
+
+    if exit.isOver(mouse):
+        exit.draw(screen,color_light)
+          
+    else: 
+        exit.draw(screen)
       
     # superimposing the text onto our button 
-    screen.blit(text , (button_x + button_width/16,button_y + button_heigth/4))
+    #screen.blit(text , (button_x + button_width/16,button_y + button_heigth/4))
 
 
       
